@@ -7,41 +7,45 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-        int k = 3;
+        int k = 1;
         String trainSetPath = "iris.data.txt";
         String testSetPath = "iris.test.data.txt";
 
         List<SetRow> traningSet = loadSet(trainSetPath);
         List<SetRow> testSet = loadSet(testSetPath);
 
-        SetRow[][] closest = kClosest(k,traningSet,testSet);
+//        SetRow[][] closest = kClosest(k, traningSet, testSet);
 
-        traningResult(closest, testSet);
+//        traningResult(closest, testSet);
 
     }
 
-    public static void traningResult(SetRow[][] closest, List<SetRow> testSet){
+    public static void traningResult(SetRow[][] closest, List<SetRow> testSet) {
+        String[] results = new String[closest[0].length];
         for (int i = 0; i < testSet.size(); i++) {
             for (int j = 0; j < closest[i].length; j++) {
-                System.out.print("Closest results:\t" + closest[i][j].getResult() );
+                results[j] = closest[i][j].result;
             }
-            System.out.println("result should be\t" + testSet.get(i).result);
         }
     }
 
-    public static SetRow[] isCloser(SetRow[] closest, SetRow traningSetRow, SetRow testSetRow){
-        if (closest.equals(null)){
-            closest = new SetRow[3];
-        }
+    public static SetRow[] isCloser(SetRow[] closest, SetRow traningSetRow, SetRow testSetRow) {
         for (int i = 0; i < closest.length; i++) {
-            if (closest[i].distanceApart(testSetRow) > traningSetRow.distanceApart(testSetRow)){
+            if (closest[i] == null) {
                 closest[i] = testSetRow;
+                break;
+            } else {
+                if (closest[i].distanceApart(testSetRow) > traningSetRow.distanceApart(testSetRow)) {
+                    closest[i] = testSetRow;
+                    break;
+                }
             }
+
         }
         return closest;
     }
 
-    public static SetRow[][] kClosest(int k, List<SetRow> traningSet, List<SetRow> testSet){
+    public static SetRow[][] kClosest(int k, List<SetRow> traningSet, List<SetRow> testSet) {
         SetRow[][] closest = new SetRow[testSet.size()][k];
         for (int i = 0; i < testSet.size(); i++) {
             for (int j = 0; j < traningSet.size(); j++) {
