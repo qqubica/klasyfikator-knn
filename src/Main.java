@@ -14,33 +14,23 @@ public class Main {
         List<SetRow> traningSet = loadSet(trainSetPath);
         List<SetRow> testSet = loadSet(testSetPath);
 
-//        SetRow[][] closest = kClosest(k, traningSet, testSet);
+        SetRow[][] closest = kClosest(k, traningSet, testSet);
 
-//        traningResult(closest, testSet);
+        traningResult(closest, testSet);
 
-    }
-
-    public static void traningResult(SetRow[][] closest, List<SetRow> testSet) {
-        String[] results = new String[closest[0].length];
-        for (int i = 0; i < testSet.size(); i++) {
-            for (int j = 0; j < closest[i].length; j++) {
-                results[j] = closest[i][j].result;
-            }
-        }
     }
 
     public static SetRow[] isCloser(SetRow[] closest, SetRow traningSetRow, SetRow testSetRow) {
         for (int i = 0; i < closest.length; i++) {
             if (closest[i] == null) {
-                closest[i] = testSetRow;
+                closest[i] = traningSetRow;
                 break;
             } else {
                 if (closest[i].distanceApart(testSetRow) > traningSetRow.distanceApart(testSetRow)) {
-                    closest[i] = testSetRow;
+                    closest[i] = traningSetRow;
                     break;
                 }
             }
-
         }
         return closest;
     }
@@ -53,6 +43,15 @@ public class Main {
             }
         }
         return closest;
+    }
+
+    public static void traningResult(SetRow[][] closest, List<SetRow> testSet) {
+        String[] results = new String[closest[0].length];
+        for (int i = 0; i < testSet.size(); i++) {
+            for (int j = 0; j < closest[i].length; j++) {
+                results[j] = closest[i][j].result;
+            }
+        }
     }
 
     public static List<SetRow> loadSet(String path) {
