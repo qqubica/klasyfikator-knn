@@ -1,20 +1,57 @@
 import java.io.IOException;
 import java.nio.file.Path;
+import java.security.Key;
 import java.util.*;
 
 public class Main {
     public static void main(String[] args) {
-        int k = 1;
-        String trainSetPath = "iris.data.txt";
-        String testSetPath = "iris.test.data.txt";
 
-        List<SetRow> traningSet = loadSet(trainSetPath);
-        List<SetRow> testSet = loadSet(testSetPath);
+            int k = 3;
+            String trainSetPath = "iris.data.txt";
+            String testSetPath = "iris.test.data.txt";
 
-        SetRow[][] closest = kClosest(k, traningSet, testSet);
+            List<SetRow> traningSet = loadSet(trainSetPath);
+            List<SetRow> testSet = loadSet(testSetPath);
 
-        traningResult(closest, testSet);
+            SetRow[][] closest = kClosest(k, traningSet, testSet);
 
+            String[] results = traningResult(closest);
+
+            compareResults(results,testSet);
+
+    }
+
+    public static void compareResults(String[] results,List<SetRow> testSet) {
+        int good = 0;
+        for (int i = 0; i < results.length; i++) {
+            if (results[i].equals(testSet.get(i).result)) {
+                good++;
+            }
+        }
+        System.out.println("Correctli identyfied " + good / results.length * 100 + "% of results");
+    }
+
+    public static String[] traningResult(SetRow[][] closest) {
+        String[] results = new String[closest.length];
+        for (int i = 0; i < results.length; i++) {
+            Map<String, Integer> resultsAnalized = new HashMap<>();
+            for (int j = 0; j < closest[0].length; j++) {
+                if (resultsAnalized.containsKey(closest[i][j].result)) {
+                    resultsAnalized.replace(closest[i][j].result, resultsAnalized.get(closest[i][j].result) + 1);
+                } else {
+                    resultsAnalized.put(closest[i][j].result, 1);
+                }
+            }
+            int tmp = 0;
+            for (Map.Entry<String, Integer> entry : resultsAnalized.entrySet()) {
+                if (tmp < entry.getValue()) {
+                    tmp = entry.getValue();
+                    results[i] = entry.getKey();
+                    System.out.println("NEW REsult");
+                }
+            }
+        }
+        return results;
     }
 
     public static SetRow[] isCloser(SetRow[] closest, SetRow traningSetRow, SetRow testSetRow) {
@@ -41,15 +78,6 @@ public class Main {
             }
         }
         return closest;
-    }
-
-    public static void traningResult(SetRow[][] closest, List<SetRow> testSet) {
-        String[] results = new String[closest.length];
-        for (int i = 0; i < testSet.size(); i++) {
-            for (int j = 0; j < closest[i].length; j++) {
-                results[j] = closest[i][j].result;
-            }
-        }
     }
 
     public static List<SetRow> loadSet(String path) {
