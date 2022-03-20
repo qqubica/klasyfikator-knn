@@ -1,9 +1,6 @@
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 public class Main {
     public static void main(String[] args) {
@@ -24,11 +21,12 @@ public class Main {
         for (int i = 0; i < closest.length; i++) {
             if (closest[i] == null) {
                 closest[i] = traningSetRow;
-                break;
+                return closest;
             } else {
                 if (closest[i].distanceApart(testSetRow) > traningSetRow.distanceApart(testSetRow)) {
+                    SetRow tmp = closest[i];
                     closest[i] = traningSetRow;
-                    break;
+                    return isCloser(closest, tmp, testSetRow);
                 }
             }
         }
@@ -46,7 +44,7 @@ public class Main {
     }
 
     public static void traningResult(SetRow[][] closest, List<SetRow> testSet) {
-        String[] results = new String[closest[0].length];
+        String[] results = new String[closest.length];
         for (int i = 0; i < testSet.size(); i++) {
             for (int j = 0; j < closest[i].length; j++) {
                 results[j] = closest[i][j].result;
