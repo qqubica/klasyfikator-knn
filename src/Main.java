@@ -1,12 +1,13 @@
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
-import java.security.Key;
 import java.util.*;
 
 public class Main {
     public static void main(String[] args) {
 
-            int k = 3;
+        for (int i = 1; i <= 105; i++) {
+            int k = i;
             String trainSetPath = "iris.data.txt";
             String testSetPath = "iris.test.data.txt";
 
@@ -17,18 +18,34 @@ public class Main {
 
             String[] results = traningResult(closest);
 
-            compareResults(results,testSet);
+            outPutForExcel(i,compareResults(results, testSet, k));
+
+        }
 
     }
 
-    public static void compareResults(String[] results,List<SetRow> testSet) {
-        int good = 0;
+    public static void outPutForExcel(int k, double results){
+        List<String> excelOutPut = new LinkedList<>();
+        excelOutPut.add("k,identified correctly");
+        if (k%5==0){
+            excelOutPut.add(k + "," + results + "%");
+        }
+        try {
+            Files.write(Path.of("excelOutPut.txt"), excelOutPut);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static double compareResults(String[] results, List<SetRow> testSet, int k) {
+        double good = 0;
         for (int i = 0; i < results.length; i++) {
             if (results[i].equals(testSet.get(i).result)) {
                 good++;
             }
         }
-        System.out.println("Correctli identyfied " + good / results.length * 100 + "% of results");
+        System.out.println("For k = " + k + "\t" + good / results.length * 100 + "% of results correct");
+        return good / results.length;
     }
 
     public static String[] traningResult(SetRow[][] closest) {
@@ -47,7 +64,6 @@ public class Main {
                 if (tmp < entry.getValue()) {
                     tmp = entry.getValue();
                     results[i] = entry.getKey();
-                    System.out.println("NEW REsult");
                 }
             }
         }
