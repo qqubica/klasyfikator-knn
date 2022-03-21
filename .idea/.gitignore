@@ -7,3 +7,5 @@
 /dataSources/
 /dataSources.local.xml
 ../excelOutPut.txt
+../iris.data.txt
+../iris.test.data.txt
